@@ -1,0 +1,12 @@
+{
+  "name": "fetchfood",
+  "version": "1.0.0",
+  "description": "FetchFood MERN full-stack food delivery app",
+  "scripts": {
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "seed": "cd server && node seed.js",
+    "install:all": "cd server && npm install && cd ../client && npm install"
+  },
+  "private": true
+}

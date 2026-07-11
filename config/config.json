@@ -1,0 +1,13 @@
+{
+  "userSettings": {
+    "globalPermissionGrants": {
+      "allow": [
+        "command(cd)",
+        "command(npx vite build 2\u003e\u00261)",
+        "command(tail)"
+      ]
+    },
+    "remoteControlHostname": "habbans-macbook-pro-2-local-warp-shard",
+    "useAiCredits": true
+  }
+}

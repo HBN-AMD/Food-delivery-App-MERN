@@ -1,0 +1,72 @@
+
+> fetchfood-client@0.0.0 dev
+> vite
+
+1:39:04 PM [vite] warning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.
+`optimizeDeps.rollupOptions` / `ssr.optimizeDeps.rollupOptions` is deprecated. Use `optimizeDeps.rolldownOptions` instead. Note that this option may be set by a plugin. Set VITE_DEPRECATION_TRACE=1 to see where it is called.
+[vite:react-babel] We recommend switching to `@vitejs/plugin-react-oxc` for improved performance. More information at https://vite.dev/rolldown
+Warning: Invalid input options (1 issue found)
+- For the "jsx". Invalid key: Expected never but received "jsx". 
+
+  VITE v8.1.4  ready in 159 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+Warning: Invalid input options (1 issue found)
+- For the "jsx". Invalid key: Expected never but received "jsx". 
+1:58:53 PM [vite] (client) hmr update /src/index.css
+2:01:49 PM [vite] (client) hmr update /src/App.jsx
+2:02:21 PM [vite] (client) hmr update /src/components/Topbar.jsx
+2:03:05 PM [vite] (client) hmr update /src/pages/HomePage.jsx
+2:19:15 PM [vite] (client) hmr update /src/index.css
+2:19:27 PM [vite] (client) hmr update /src/pages/MyOrdersPage.jsx, /src/pages/AccountPage.jsx, /src/pages/ExplorePage.jsx, /src/pages/SettingsPage.jsx, /src/pages/HomePage.jsx
+2:19:46 PM [vite] (client) hmr update /src/components/Sidebar.jsx
+2:19:56 PM [vite] (client) hmr update /src/index.css
+2:20:11 PM [vite] (client) hmr update /src/pages/ExplorePage.jsx
+2:24:42 PM [vite] (client) hmr update /src/components/Topbar.jsx
+2:29:39 PM [vite] (client) hmr update /src/index.css
+2:29:40 PM [vite] (client) hmr update /src/context/AuthContext.jsx
+2:29:40 PM [vite] (client) hmr invalidate /src/context/AuthContext.jsx Could not Fast Refresh ("useAuth" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+2:29:40 PM [vite] (client) hmr update /src/App.jsx, /src/pages/AuthPage.jsx, /src/components/Topbar.jsx, /src/components/Sidebar.jsx, /src/pages/AccountPage.jsx
+2:29:44 PM [vite] (client) hmr update /src/context/CartContext.jsx
+2:29:44 PM [vite] (client) hmr update /src/components/RestaurantCard.jsx
+2:29:44 PM [vite] (client) hmr update /src/pages/RestaurantPage.jsx
+2:29:44 PM [vite] (client) hmr invalidate /src/context/CartContext.jsx Could not Fast Refresh ("useCart" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+2:29:44 PM [vite] (client) hmr update /src/App.jsx, /src/components/MenuItemCard.jsx, /src/components/CartSidebar.jsx
+2:30:15 PM [vite] (client) hmr update /src/components/CartSidebar.jsx
+2:30:15 PM [vite] (client) hmr update /src/components/MapView.jsx
+2:30:32 PM [vite] (client) hmr update /src/pages/OrderTrackingPage.jsx
+2:34:22 PM [vite] (client) hmr update /src/index.css
+2:34:33 PM [vite] (client) hmr update /src/pages/SettingsPage.jsx
+2:34:43 PM [vite] (client) page reload index.html
+2:35:15 PM [vite] (client) [Unhandled rejection] Error: Map container is already initialized.
+ > NewClass._initContainer node_modules/leaflet/dist/leaflet-src.js:4207:11
+ > NewClass.initialize node_modules/leaflet/dist/leaflet-src.js:3249:9
+ > new NewClass node_modules/leaflet/dist/leaflet-src.js:302:21
+ > Object.createMap [as map] node_modules/leaflet/dist/leaflet-src.js:4863:10
+ > map src/components/MapView.jsx:31:20
+    29 |        });
+    30 |  
+    31 |        const map = L.map(mapRef.current, {
+       |                      ^
+    32 |          center: [37.765, -122.41],
+    33 |          zoom: 13,
+
+2:36:29 PM [vite] (client) [Unhandled rejection] Error: Map container is already initialized.
+ > NewClass._initContainer node_modules/leaflet/dist/leaflet-src.js:4207:11
+ > NewClass.initialize node_modules/leaflet/dist/leaflet-src.js:3249:9
+ > new NewClass node_modules/leaflet/dist/leaflet-src.js:302:21
+ > Object.createMap [as map] node_modules/leaflet/dist/leaflet-src.js:4863:10
+ > map src/components/MapView.jsx:31:20
+    29 |        });
+    30 |  
+    31 |        const map = L.map(mapRef.current, {
+       |                      ^
+    32 |          center: [37.765, -122.41],
+    33 |          zoom: 13,
+
+2:39:38 PM [vite] (client) hmr update /src/index.css
+2:42:00 PM [vite] (client) hmr update /src/index.css
+2:42:11 PM [vite] (client) hmr update /src/index.css
+2:42:22 PM [vite] (client) hmr update /src/index.css
+2:46:04 PM [vite] (client) hmr update /src/pages/HomePage.jsx, /src/pages/OrderTrackingPage.jsx, /src/pages/RestaurantPage.jsx, /src/pages/AuthPage.jsx, /src/components/CartSidebar.jsx, /src/pages/MyOrdersPage.jsx, /src/pages/ExplorePage.jsx

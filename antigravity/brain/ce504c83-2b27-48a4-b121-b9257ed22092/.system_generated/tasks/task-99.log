@@ -1,0 +1,11 @@
+
+> fetchfood-server@1.0.0 dev
+> nodemon index.js
+
+[nodemon] 3.1.14
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node index.js`
+✅ MongoDB connected to mongodb://127.0.0.1:27017/fetchfood
+🚀 Server running on http://localhost:5000
