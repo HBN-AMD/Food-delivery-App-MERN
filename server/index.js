@@ -15,7 +15,13 @@ app.use('/api/restaurants', require('./routes/restaurants'));
 app.use('/api/orders', require('./routes/orders'));
 
 // Health check
-app.get('/api/health', (req, res) => res.json({ status: 'OK', message: 'FetchFood API running' }));
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'FetchFood API running',
+    dbConfigured: !!process.env.MONGO_URI
+  });
+});
 
 // Connect to MongoDB
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/fetchfood';
