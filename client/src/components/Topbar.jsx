@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 
 /* ───── Icons ───── */
 const SearchIcon = () => (
@@ -17,6 +18,11 @@ const BellIcon = () => (
 const ChevronDown = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="6 9 12 15 18 9"/>
+  </svg>
+);
+const MenuIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
   </svg>
 );
 
@@ -87,6 +93,7 @@ function useOutsideClick(ref, handler) {
 
 export default function Topbar({ onSearch }) {
   const { user, logoutUser } = useAuth();
+  const { toggleMobileMenu } = useUI();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
@@ -124,7 +131,12 @@ export default function Topbar({ onSearch }) {
 
   return (
     <header className={`topbar${scrolled ? ' scrolled' : ''}`}>
-      <div className="topbar-logo">FetchFood</div>
+      <div className="topbar-left-mobile">
+        <button className="mobile-menu-btn" onClick={toggleMobileMenu} aria-label="Menu">
+          <MenuIcon />
+        </button>
+        <div className="topbar-logo">FetchFood</div>
+      </div>
 
       {/* Search */}
       <div className="topbar-search">

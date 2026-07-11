@@ -1825,6 +1825,13 @@ ul { list-style: none; }
 .star { color: #F59E0B; }
 
 /* ===== RESPONSIVE ===== */
+.topbar-left-mobile { display: flex; align-items: center; gap: 12px; }
+.mobile-menu-btn { display: none; background: none; border: none; color: var(--text-primary); cursor: pointer; padding: 4px; }
+.sidebar-header { display: none; padding: 0 24px 32px; justify-content: space-between; align-items: center; }
+.sidebar-close-btn { background: var(--bg-light); border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; }
+.sidebar-close-btn:hover { background: var(--primary-bg); color: var(--primary); }
+.sidebar-backdrop { display: none; }
+
 @media (max-width: 1300px) {
   .restaurant-grid { grid-template-columns: repeat(3, 1fr); }
 }
@@ -1835,9 +1842,73 @@ ul { list-style: none; }
   .account-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
-  .sidebar { display: none; }
-  .topbar-logo { display: block; }
-  .menu-grid { grid-template-columns: 1fr; }
-  .cart-sidebar { width: 290px; }
   :root { --sidebar-width: 0px; }
+  
+  /* Topbar */
+  .mobile-menu-btn { display: flex; }
+  .topbar-logo { display: block; }
+  .topbar { padding: 12px 20px; gap: 12px; }
+  .topbar-search { max-width: none; flex: 1; }
+  
+  /* Sidebar Mobile Overlay */
+  .sidebar { 
+    position: fixed; 
+    top: 0; left: 0; bottom: 0; 
+    z-index: 1000; 
+    width: 280px; 
+    transform: translateX(-100%); 
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    box-shadow: none;
+  }
+  .sidebar.mobile-open { 
+    transform: translateX(0); 
+    box-shadow: var(--shadow-xl); 
+  }
+  .sidebar-header { display: flex; padding: 24px 16px 24px 20px; }
+  .sidebar-header .sidebar-logo { padding: 0; }
+  .sidebar > .sidebar-logo { display: none; }
+  
+  .sidebar-backdrop {
+    display: block;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+    animation: fadeIn 0.3s ease;
+  }
+  
+  /* Layout tweaks */
+  .page-content { padding: 20px; }
+  .restaurant-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .menu-grid { grid-template-columns: 1fr; }
+  .cart-sidebar { width: 100%; position: static; height: auto; border-left: none; border-top: 1px solid var(--border); }
+  .app-layout { flex-direction: column; }
+}
+
+@media (max-width: 600px) {
+  .restaurant-grid { grid-template-columns: 1fr; }
+  .order-again-row { 
+    display: flex; 
+    overflow-x: auto; 
+    scroll-snap-type: x mandatory; 
+    gap: 16px;
+    padding-bottom: 12px;
+    margin: 0 -20px;
+    padding: 0 20px 12px 20px;
+  }
+  .order-again-row::-webkit-scrollbar { display: none; }
+  .order-again-card { 
+    min-width: 260px; 
+    scroll-snap-align: start; 
+  }
+  .hero-banner-content h2 { font-size: 1.5rem; }
+  
+  /* Hide search bar on super small screens, could use search icon only */
+  .topbar-search input { padding: 10px 14px 10px 38px; font-size: 0.85rem; }
+  .topbar-user-info { display: none; } /* Hide user name */
+  .topbar { padding: 12px 16px; }
+  
+  /* Auth Page */
+  .auth-card { padding: 32px 24px; }
 }

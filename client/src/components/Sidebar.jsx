@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 
 const HomeIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -28,8 +29,15 @@ const SettingsIcon = () => (
   </svg>
 );
 
+const CloseIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+
 export default function Sidebar() {
   const { logoutUser } = useAuth();
+  const { isMobileMenuOpen, closeMobileMenu } = useUI();
   const navItems = [
     { to: '/', label: 'Home', Icon: HomeIcon, end: true },
     { to: '/explore', label: 'Explore', Icon: ExploreIcon },
@@ -38,16 +46,22 @@ export default function Sidebar() {
     { to: '/settings', label: 'Settings', Icon: SettingsIcon },
   ];
   return (
-    <aside className="sidebar">
-      <div className="sidebar-logo">FetchFood</div>
-      <nav className="sidebar-nav">
-        {navItems.map(({ to, label, Icon, end }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
-            className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
-          >
+    <>
+      {isMobileMenuOpen && <div className="sidebar-backdrop" onClick={closeMobileMenu} />}
+      <aside className={`sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+        <div className="sidebar-header">
+          <div className="sidebar-logo">FetchFood</div>
+          <button className="sidebar-close-btn" onClick={closeMobileMenu}><CloseIcon /></button>
+        </div>
+        <nav className="sidebar-nav">
+          {navItems.map(({ to, label, Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              onClick={closeMobileMenu}
+              className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
+            >
             <Icon />
             <span>{label}</span>
           </NavLink>
@@ -59,5 +73,6 @@ export default function Sidebar() {
         <button className="btn-upgrade">Upgrade Now</button>
       </div>
     </aside>
+    </>
   );
 }

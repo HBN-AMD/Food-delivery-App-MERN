@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { UIProvider } from './context/UIContext';
 import HomePage from './pages/HomePage';
 import RestaurantPage from './pages/RestaurantPage';
 import OrderTrackingPage from './pages/OrderTrackingPage';
@@ -36,9 +37,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <CartProvider>
-          <AppRoutes />
-        </CartProvider>
+        <UIProvider>
+          <CartProvider>
+            <AppRoutes />
+          </CartProvider>
+        </UIProvider>
       </AuthProvider>
     </BrowserRouter>
   );
