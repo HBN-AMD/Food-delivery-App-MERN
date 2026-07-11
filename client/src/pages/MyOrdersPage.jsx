@@ -176,7 +176,15 @@ export default function MyOrdersPage() {
                   </div>
                   <div className="order-card-action">
                     <div className="order-card-total">${order.total?.toFixed(2)}</div>
-                    <button className="reorder-btn" onClick={e => e.stopPropagation()}>Reorder</button>
+                    <button className="reorder-btn" onClick={e => {
+                      e.stopPropagation();
+                      if (order.restaurant) {
+                        const restId = typeof order.restaurant === 'object' ? order.restaurant._id : order.restaurant;
+                        navigate(`/restaurant/${restId}`);
+                      } else {
+                        navigate('/explore');
+                      }
+                    }}>Reorder</button>
                   </div>
                 </div>
               ))}
