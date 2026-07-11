@@ -51,7 +51,9 @@ export default function Sidebar() {
       <aside className={`sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-logo">FetchFood</div>
-          <button className="sidebar-close-btn" onClick={closeMobileMenu}><CloseIcon /></button>
+          <button type="button" className="sidebar-close-btn" onClick={closeMobileMenu} aria-label="Close menu">
+            <CloseIcon />
+          </button>
         </div>
         <nav className="sidebar-nav">
           {navItems.map(({ to, label, Icon, end }) => (
