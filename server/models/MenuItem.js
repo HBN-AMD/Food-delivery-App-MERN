@@ -9,6 +9,9 @@ const menuItemSchema = new mongoose.Schema({
   image: { type: String },
   isPopular: { type: Boolean, default: false },
   isVeg: { type: Boolean, default: false },
+
+  // Vendor can toggle this off when item runs out
+  isAvailable: { type: Boolean, default: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('MenuItem', menuItemSchema);

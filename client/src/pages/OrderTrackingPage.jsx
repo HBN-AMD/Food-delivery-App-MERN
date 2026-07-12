@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import MapView from '../components/MapView';
 import { fetchOrder } from '../api';
+import { useAuth } from '../context/AuthContext';
+import { connectSocket } from '../hooks/useSocket';
 
 const BackIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -40,17 +42,20 @@ const NavigateIcon = () => (
 );
 
 const STATUS_STEPS = [
-  { key: 'preparing', label: 'Order Preparing', sub: 'Chef is assembling your meal • 12:15 PM' },
-  { key: 'picked_up', label: 'Picked Up', sub: 'Michael has collected your order • 12:32 PM' },
-  { key: 'arriving', label: 'Arriving Soon', sub: 'The driver is 1.2 miles away' },
-  { key: 'delivered', label: 'Delivered', sub: 'Enjoy your delicious meal' },
+  { key: 'pending',   label: 'Order Placed',    sub: 'Waiting for restaurant to accept' },
+  { key: 'accepted',  label: 'Order Accepted',  sub: 'Restaurant has confirmed your order' },
+  { key: 'preparing', label: 'Preparing',        sub: 'Chef is assembling your meal' },
+  { key: 'ready',     label: 'Ready for Pickup', sub: 'Waiting for rider pickup' },
+  { key: 'picked_up', label: 'On the Way',       sub: 'Rider has collected your order' },
+  { key: 'delivered', label: 'Delivered',         sub: 'Enjoy your delicious meal! 🎉' },
 ];
 
-const STATUS_ORDER = ['preparing', 'picked_up', 'arriving', 'delivered'];
+const STATUS_ORDER = ['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'delivered'];
 
 export default function OrderTrackingPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -87,6 +92,26 @@ export default function OrderTrackingPage() {
     };
     load();
   }, [id]);
+
+  // Real-time socket listener for status updates
+  useEffect(() => {
+    if (!user) return;
+    const socket = connectSocket();
+    socket.emit('join_user_room', user.id);
+
+    const handleUpdate = ({ orderId, status }) => {
+      setOrder(prev => {
+        if (!prev) return prev;
+        if (prev._id === orderId || String(prev._id) === String(orderId)) {
+          return { ...prev, status };
+        }
+        return prev;
+      });
+    };
+
+    socket.on('order_status_update', handleUpdate);
+    return () => socket.off('order_status_update', handleUpdate);
+  }, [user]);
 
   if (loading) {
     return <div className="loading-page"><div className="spinner"></div></div>;

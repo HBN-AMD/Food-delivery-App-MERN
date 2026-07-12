@@ -11,7 +11,11 @@ const restaurantSchema = new mongoose.Schema({
   tags: [String],
   badge: { type: String, enum: ['FREE DELIVERY', 'TOP RATED', 'TRENDING', null], default: null },
   isOpen: { type: Boolean, default: true },
-  address: { type: String, default: 'San Francisco, CA' },
+  address: { type: String, default: 'Islamabad, Pakistan' },
+
+  // Marketplace fields
+  region: { type: String, default: 'Islamabad' },
+  vendorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);

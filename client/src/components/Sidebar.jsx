@@ -39,7 +39,7 @@ export default function Sidebar() {
   const { logoutUser } = useAuth();
   const { isMobileMenuOpen, closeMobileMenu } = useUI();
   const navItems = [
-    { to: '/', label: 'Home', Icon: HomeIcon, end: true },
+    { to: '/home', label: 'Home', Icon: HomeIcon, end: true },
     { to: '/explore', label: 'Explore', Icon: ExploreIcon },
     { to: '/orders', label: 'My Orders', Icon: OrdersIcon },
     { to: '/account', label: 'Account', Icon: AccountIcon },

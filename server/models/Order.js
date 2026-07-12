@@ -11,20 +11,33 @@ const orderItemSchema = new mongoose.Schema({
 
 const orderSchema = new mongoose.Schema({
   orderNumber: { type: String, unique: true },
+
+  // Parties
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   restaurant: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' },
   restaurantName: String,
+  vendorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  riderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+
+  // Location
+  region: { type: String, default: 'Islamabad' },
+
+  // Order details
   items: [orderItemSchema],
   subtotal: Number,
   deliveryFee: { type: Number, default: 2.99 },
   tax: Number,
   total: Number,
+  deliveryAddress: String,
+
+  // Extended status lifecycle
   status: {
     type: String,
-    enum: ['preparing', 'picked_up', 'arriving', 'delivered'],
-    default: 'preparing',
+    enum: ['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'delivered'],
+    default: 'pending',
   },
   estimatedDelivery: String,
+
   driver: {
     name: { type: String, default: 'Michael J.' },
     rating: { type: Number, default: 4.9 },
@@ -32,7 +45,6 @@ const orderSchema = new mongoose.Schema({
     avatar: { type: String, default: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop' },
     distanceMiles: { type: Number, default: 1.2 },
   },
-  deliveryAddress: String,
 }, { timestamps: true });
 
 // Auto-generate order number
