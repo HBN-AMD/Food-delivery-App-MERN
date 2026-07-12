@@ -6,10 +6,13 @@ const MenuItem = require('../models/MenuItem');
 // GET /api/restaurants — list all restaurants (with optional cuisine filter)
 router.get('/', async (req, res) => {
   try {
-    const { cuisine } = req.query;
+    const { cuisine, region } = req.query;
     let query = {};
     if (cuisine && cuisine !== 'All Foods') {
       query.cuisines = { $in: [cuisine] };
+    }
+    if (region) {
+      query.region = region;
     }
     const restaurants = await Restaurant.find(query).sort({ rating: -1 });
     res.json(restaurants);

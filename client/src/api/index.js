@@ -11,8 +11,8 @@ api.interceptors.request.use((config) => {
 });
 
 // ─── Consumer ────────────────────────────────────────────────────────────────
-export const fetchRestaurants = (cuisine) =>
-  api.get('/restaurants', { params: cuisine && cuisine !== 'All Foods' ? { cuisine } : {} });
+export const fetchRestaurants = (cuisine, region) =>
+  api.get('/restaurants', { params: { ...(cuisine && cuisine !== 'All Foods' ? { cuisine } : {}), ...(region ? { region } : {}) } });
 export const fetchRestaurant = (id) => api.get(`/restaurants/${id}`);
 export const fetchMenu = (id) => api.get(`/restaurants/${id}/menu`);
 export const placeOrder = (data) => api.post('/orders', data);
@@ -23,6 +23,7 @@ export const updateOrderStatus = (id, status) => api.patch(`/orders/${id}/status
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 export const login = (data) => api.post('/auth/login', data);
 export const register = (data) => api.post('/auth/register', data);
+export const updateProfile = (data) => api.patch('/auth/profile', data);
 
 // ─── Vendor ──────────────────────────────────────────────────────────────────
 export const fetchVendorRestaurant = () => api.get('/vendor/restaurant');

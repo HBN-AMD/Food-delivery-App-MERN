@@ -3,17 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import RestaurantCard from '../components/RestaurantCard';
-import { fetchRestaurants } from '../api';
+import { fetchRestaurants, fetchOrders } from '../api';
 import useScrollReveal from '../hooks/useScrollReveal';
+import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 const CUISINES = ['All Foods', 'Fast Food', 'Desi', 'Healthy', 'Desserts', 'Beverages', 'Sushi', 'Vegan'];
 
-const ORDER_AGAIN = [
-  { name: 'Pepperoni Feast', restaurant: 'Pizza Hut', time: '2 days ago', image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=120&h=120&fit=crop' },
-  { name: 'Avocado Keto Bowl', restaurant: 'Green Eats', time: '4 days ago', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=120&h=120&fit=crop' },
-  { name: 'Molten Lava Cake', restaurant: 'Sweet Spot', time: 'Last week', image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=120&h=120&fit=crop' },
-  { name: 'Dragon Roll', restaurant: 'Sushi Zen', time: 'Last week', image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=120&h=120&fit=crop' },
-];
+
 
 const CartIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -37,16 +34,27 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [activeCuisine, setActiveCuisine] = useState('All Foods');
   const [search, setSearch] = useState('');
+  const { user } = useAuth();
+  const { addItem } = useCart();
   const navigate = useNavigate();
   const containerRef = useScrollReveal();
+  const [recentOrders, setRecentOrders] = useState([]);
 
   useEffect(() => {
     setLoading(true);
-    fetchRestaurants(activeCuisine)
+    fetchRestaurants(activeCuisine, user?.region)
       .then(res => setRestaurants(res.data))
       .catch(() => setRestaurants([]))
       .finally(() => setLoading(false));
-  }, [activeCuisine]);
+  }, [activeCuisine, user?.region]);
+
+  useEffect(() => {
+    if (user) {
+      fetchOrders()
+        .then(res => setRecentOrders(res.data.slice(0, 4)))
+        .catch(err => console.error('Failed to fetch orders', err));
+    }
+  }, [user]);
 
   const filtered = search
     ? restaurants.filter(r =>
@@ -75,7 +83,7 @@ export default function HomePage() {
                 <span className="flash-badge">⚡ Flash Sale</span>
                 <h2>50% Off Your<br />First Order</h2>
                 <p>Valid on all Italian & Continental restaurants today.</p>
-                <button className="btn-claim">Claim Offer <ArrowIcon /></button>
+                <button className="btn-claim" onClick={() => navigate('/explore')}>Claim Offer <ArrowIcon /></button>
               </div>
             </div>
             <div className="hero-green-card">
@@ -130,24 +138,31 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* ── Order it Again ── */}
-          <div className="section-header reveal" style={{ marginTop: 8 }}>
-            <h2 className="section-title">Order it again</h2>
-          </div>
-          <div className="order-again-row reveal">
-            {ORDER_AGAIN.map((item, i) => (
-              <div key={i} className="order-again-card" id={`reorder-${i}`}>
-                <img className="order-again-img" src={item.image} alt={item.name} />
-                <div className="order-again-info">
-                  <div className="order-again-name">{item.name}</div>
-                  <div className="order-again-rest">{item.restaurant} · {item.time}</div>
-                </div>
-                <button className="order-again-btn" aria-label="Add to cart">
-                  <CartIcon />
-                </button>
+          {recentOrders.length > 0 && (
+            <>
+              <div className="section-header reveal" style={{ marginTop: 8 }}>
+                <h2 className="section-title">Order it again</h2>
               </div>
-            ))}
-          </div>
+              <div className="order-again-row reveal">
+                {recentOrders.map((order) => {
+                  const firstItem = order.items?.[0];
+                  if (!firstItem) return null;
+                  return (
+                    <div key={order._id} className="order-again-card" id={`reorder-${order._id}`}>
+                      <img className="order-again-img" src={firstItem.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=120&h=120&fit=crop'} alt={firstItem.name} />
+                      <div className="order-again-info">
+                        <div className="order-again-name">{firstItem.name}</div>
+                        <div className="order-again-rest">{order.restaurantName} · {new Date(order.createdAt).toLocaleDateString()}</div>
+                      </div>
+                      <button className="order-again-btn" aria-label="Add to cart" onClick={() => addItem(firstItem, order.restaurant, order.restaurantName)}>
+                        <CartIcon />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
 
           {/* Bottom padding */}
           <div style={{ height: 40 }} />

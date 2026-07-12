@@ -11,19 +11,14 @@ export function useSocket(user) {
   useEffect(() => {
     if (!user) return;
 
-    // Reuse existing connection
+    const token = localStorage.getItem('token');
     if (!socketInstance || !socketInstance.connected) {
-      socketInstance = io(SOCKET_URL, { transports: ['websocket', 'polling'] });
+      socketInstance = io(SOCKET_URL, {
+        transports: ['websocket', 'polling'],
+        auth: { token }
+      });
     }
     socketRef.current = socketInstance;
-
-    // Join appropriate room based on role
-    if (user.role === 'consumer') {
-      socketInstance.emit('join_user_room', user.id);
-    } else if (user.role === 'vendor') {
-      socketInstance.emit('join_vendor_room', user.id);
-    }
-    // Riders join region room only when they go online (handled in RiderDashboard)
 
     return () => {
       // Don't disconnect on unmount — keep connection alive across pages
@@ -38,8 +33,12 @@ export function getSocket() {
 }
 
 export function connectSocket() {
+  const token = localStorage.getItem('token');
   if (!socketInstance || !socketInstance.connected) {
-    socketInstance = io(SOCKET_URL, { transports: ['websocket', 'polling'] });
+    socketInstance = io(SOCKET_URL, {
+      transports: ['websocket', 'polling'],
+      auth: { token }
+    });
   }
   return socketInstance;
 }

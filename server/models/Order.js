@@ -20,7 +20,7 @@ const orderSchema = new mongoose.Schema({
   riderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
 
   // Location
-  region: { type: String, default: 'Islamabad' },
+  region: { type: String, required: true },
 
   // Order details
   items: [orderItemSchema],
@@ -32,10 +32,10 @@ const orderSchema = new mongoose.Schema({
 
   // Extended status lifecycle
   status: {
-    type: String,
-    enum: ['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'delivered'],
-    default: 'pending',
-  },
+  type: String,
+  enum: ['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'arriving', 'delivered'],
+  default: 'pending',
+},
   estimatedDelivery: String,
 
   driver: {

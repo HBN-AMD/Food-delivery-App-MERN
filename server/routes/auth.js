@@ -102,4 +102,47 @@ router.post('/login', async (req, res) => {
   }
 });
 
+const auth = require('../middleware/auth');
+
+// PATCH /api/auth/profile
+router.patch('/profile', auth, async (req, res) => {
+  try {
+    const { name, phone, location } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    if (name) user.name = name;
+    if (phone) user.phone = phone; // Assuming phone exists or gets added to User schema
+    if (location) {
+      user.location = location;
+      // Also update region if needed, though location is usually enough
+    }
+
+    await user.save();
+    
+    // Generate new token to reflect new name/location if stored in token
+    const token = jwt.sign(
+      { id: user._id, email: user.email, name: user.name, role: user.role, region: user.region },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        location: user.location,
+        role: user.role,
+        region: user.region,
+        restaurantId: user.restaurantId || null,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

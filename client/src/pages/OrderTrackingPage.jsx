@@ -64,28 +64,9 @@ export default function OrderTrackingPage() {
       try {
         const res = await fetchOrder(id);
         setOrder(res.data);
-      } catch {
-        // demo fallback
-        setOrder({
-          orderNumber: 'FF-82910',
-          restaurantName: 'Burger Palace',
-          estimatedDelivery: '12:45 PM',
-          status: 'arriving',
-          items: [
-            { name: '2x Signature Burger', price: 24.00, quantity: 2 },
-            { name: '1x Truffle Fries', price: 7.50, quantity: 1 },
-          ],
-          subtotal: 31.50,
-          tax: 2.75,
-          total: 34.25,
-          driver: {
-            name: 'Michael J.',
-            rating: 4.9,
-            vehicle: 'Riding a Red Scooter',
-            avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop',
-            distanceMiles: 1.2,
-          },
-        });
+      } catch (err) {
+        console.error(err);
+        navigate('/orders');
       } finally {
         setLoading(false);
       }

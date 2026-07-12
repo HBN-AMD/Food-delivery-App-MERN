@@ -19,37 +19,58 @@ const io = new Server(httpServer, {
 // Make io accessible to route handlers via req.app.get('io')
 app.set('io', io);
 
+const jwt = require('jsonwebtoken');
+const User = require('./models/User');
+
+// Socket Authentication Middleware
+io.use(async (socket, next) => {
+  try {
+    const token = socket.handshake.auth.token;
+    if (!token) return next(new Error('Authentication error: Token missing'));
+    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret123');
+    const user = await User.findById(decoded.id).select('-password');
+    if (!user) return next(new Error('Authentication error: User not found'));
+
+    socket.user = user;
+    next();
+  } catch (err) {
+    next(new Error('Authentication error: Invalid token'));
+  }
+});
+
 io.on('connection', (socket) => {
-  console.log(`⚡ Socket connected: ${socket.id}`);
+  console.log(`⚡ Socket connected: ${socket.id} (User: ${socket.user.name}, Role: ${socket.user.role})`);
 
-  // Consumer joins their personal room to receive order updates
-  socket.on('join_user_room', (userId) => {
-    socket.join(`user_${userId}`);
-    console.log(`👤 Consumer joined room: user_${userId}`);
+  // Automatically assign users to their secure rooms based on role
+  if (socket.user.role === 'consumer') {
+    socket.join(`user_${socket.user._id}`);
+    console.log(`👤 Consumer assigned to room: user_${socket.user._id}`);
+  } else if (socket.user.role === 'vendor') {
+    socket.join(`vendor_${socket.user._id}`);
+    console.log(`🏪 Vendor assigned to room: vendor_${socket.user._id}`);
+  }
+
+  // Rider goes online/offline in their specific region
+  socket.on('join_region', () => {
+    if (socket.user.role !== 'rider') return;
+    const regionRoom = `region_${socket.user.region}`;
+    socket.join(regionRoom);
+    console.log(`🛵 Rider joined assigned region: ${regionRoom}`);
   });
 
-  // Vendor joins their personal room to receive new orders
-  socket.on('join_vendor_room', (vendorId) => {
-    socket.join(`vendor_${vendorId}`);
-    console.log(`🏪 Vendor joined room: vendor_${vendorId}`);
-  });
-
-  // Rider joins region room when going online
-  socket.on('join_region', (region) => {
-    socket.join(`region_${region}`);
-    console.log(`🛵 Rider joined region: region_${region}`);
-  });
-
-  // Rider leaves region room when going offline
-  socket.on('leave_region', (region) => {
-    socket.leave(`region_${region}`);
-    console.log(`🛵 Rider left region: region_${region}`);
+  socket.on('leave_region', () => {
+    if (socket.user.role !== 'rider') return;
+    const regionRoom = `region_${socket.user.region}`;
+    socket.leave(regionRoom);
+    console.log(`🛵 Rider left assigned region: ${regionRoom}`);
   });
 
   socket.on('disconnect', () => {
     console.log(`❌ Socket disconnected: ${socket.id}`);
   });
 });
+
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors());

@@ -56,7 +56,7 @@ export default function VendorDashboard() {
         </nav>
 
         <div className="vendor-sidebar-footer">
-          <button className="vendor-support-btn" onClick={() => {}}>❓ Support</button>
+          <button className="vendor-support-btn" onClick={() => window.location.href = 'mailto:support@fetchfood.com'}>❓ Support</button>
         </div>
       </aside>
 

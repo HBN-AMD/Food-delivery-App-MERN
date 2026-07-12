@@ -4,6 +4,8 @@ import Topbar from '../components/Topbar';
 import { useAuth } from '../context/AuthContext';
 import useScrollReveal from '../hooks/useScrollReveal';
 
+import { updateProfile } from '../api';
+
 const EditIcon = () => (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -12,20 +14,27 @@ const EditIcon = () => (
 );
 
 export default function AccountPage() {
-  const { user, logoutUser } = useAuth();
+  const { user, loginUser, logoutUser } = useAuth();
   const containerRef = useScrollReveal();
   const [form, setForm] = useState({
-    name: user?.name || 'Alex Johnson',
-    email: user?.email || 'alex@fetchfood.com',
-    phone: '+971 50 123 4567',
-    location: user?.location || 'Dubai, UAE',
+    name: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    location: user?.location || '',
   });
   const [saved, setSaved] = useState(false);
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    try {
+      const res = await updateProfile(form);
+      loginUser(res.data.user, res.data.token);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update profile');
+    }
   };
 
   return (

@@ -14,7 +14,7 @@ const restaurantSchema = new mongoose.Schema({
   address: { type: String, default: 'Islamabad, Pakistan' },
 
   // Marketplace fields
-  region: { type: String, default: 'Islamabad' },
+  region: { type: String, required: true },
   vendorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
 }, { timestamps: true });
 
