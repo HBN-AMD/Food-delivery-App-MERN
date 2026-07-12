@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import RestaurantCard from '../components/RestaurantCard';
-import { fetchRestaurants, fetchOrders } from '../api';
+import { fetchRestaurants, fetchNearbyRestaurants, fetchOrders } from '../api';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -40,13 +40,41 @@ export default function HomePage() {
   const containerRef = useScrollReveal();
   const [recentOrders, setRecentOrders] = useState([]);
 
+  const [locationStatus, setLocationStatus] = useState('loading'); // 'loading' | 'granted' | 'denied'
+
   useEffect(() => {
+    if (!navigator.geolocation) {
+      setLocationStatus('denied');
+      return;
+    }
+    
     setLoading(true);
-    fetchRestaurants(activeCuisine, user?.region)
-      .then(res => setRestaurants(res.data))
-      .catch(() => setRestaurants([]))
-      .finally(() => setLoading(false));
-  }, [activeCuisine, user?.region]);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocationStatus('granted');
+        fetchNearbyRestaurants(position.coords.longitude, position.coords.latitude)
+          .then(res => setRestaurants(res.data))
+          .catch(() => setRestaurants([]))
+          .finally(() => setLoading(false));
+      },
+      (error) => {
+        console.warn('Geolocation error:', error.message);
+        setLocationStatus('denied');
+      },
+      { timeout: 10000, maximumAge: 60000 }
+    );
+  }, []);
+
+  // Fallback to region-based query if geolocation is denied or while activeCuisine changes
+  useEffect(() => {
+    if (locationStatus === 'denied') {
+      setLoading(true);
+      fetchRestaurants(activeCuisine, user?.region)
+        .then(res => setRestaurants(res.data))
+        .catch(() => setRestaurants([]))
+        .finally(() => setLoading(false));
+    }
+  }, [activeCuisine, user?.region, locationStatus]);
 
   useEffect(() => {
     if (user) {
@@ -126,7 +154,17 @@ export default function HomePage() {
           </div>
 
           {loading ? (
-            <div className="loading-page"><div className="spinner" /></div>
+            <div className="restaurant-grid">
+              {[1, 2, 3, 4].map(n => (
+                <div key={n} className="restaurant-card" style={{ opacity: 0.5 }}>
+                  <div style={{ background: '#e5e7eb', height: 180, width: '100%' }}></div>
+                  <div style={{ padding: 16 }}>
+                    <div style={{ background: '#e5e7eb', height: 20, width: '60%', marginBottom: 8 }}></div>
+                    <div style={{ background: '#e5e7eb', height: 16, width: '40%' }}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
             <div className="restaurant-grid">
               {filtered.map(r => <RestaurantCard key={r._id} restaurant={r} />)}

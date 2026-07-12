@@ -13,6 +13,8 @@ api.interceptors.request.use((config) => {
 // ─── Consumer ────────────────────────────────────────────────────────────────
 export const fetchRestaurants = (cuisine, region) =>
   api.get('/restaurants', { params: { ...(cuisine && cuisine !== 'All Foods' ? { cuisine } : {}), ...(region ? { region } : {}) } });
+export const fetchNearbyRestaurants = (lng, lat) =>
+  api.get('/restaurants/nearby', { params: { lng, lat } });
 export const fetchRestaurant = (id) => api.get(`/restaurants/${id}`);
 export const fetchMenu = (id) => api.get(`/restaurants/${id}/menu`);
 export const placeOrder = (data) => api.post('/orders', data);

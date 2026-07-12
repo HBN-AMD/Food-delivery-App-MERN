@@ -16,6 +16,14 @@ const restaurantSchema = new mongoose.Schema({
   // Marketplace fields
   region: { type: String, required: true },
   vendorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+
+  // Geospatial
+  location: {
+    type: { type: String, enum: ['Point'], default: 'Point' },
+    coordinates: { type: [Number], required: true, default: [73.0479, 33.6844] }, // [lng, lat] (Default: Islamabad)
+  }
 }, { timestamps: true });
+
+restaurantSchema.index({ location: '2dsphere' });
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);
