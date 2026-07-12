@@ -145,4 +145,19 @@ router.patch('/profile', auth, async (req, res) => {
   }
 });
 
+// DELETE /api/auth/account
+router.delete('/account', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    // Delete user
+    await User.findByIdAndDelete(userId);
+    // Delete their associated restaurant if they are a vendor
+    await Restaurant.findOneAndDelete({ vendorId: userId });
+    
+    res.json({ message: 'Account deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

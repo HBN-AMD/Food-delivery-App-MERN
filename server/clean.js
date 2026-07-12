@@ -6,7 +6,7 @@ const Order = require('./models/Order');
 
 async function cleanDB() {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/fetchfood');
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/fetchfood');
     console.log('✅ Connected to MongoDB');
 
     // Find restaurants that do not have a vendorId (these are the seeded/dummy ones)

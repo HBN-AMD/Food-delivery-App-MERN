@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useUI } from '../context/UIContext';
+import { useTranslation } from 'react-i18next';
 
 const HomeIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -38,12 +39,14 @@ const CloseIcon = () => (
 export default function Sidebar() {
   const { logoutUser } = useAuth();
   const { isMobileMenuOpen, closeMobileMenu } = useUI();
+  const { t } = useTranslation();
+  
   const navItems = [
-    { to: '/home', label: 'Home', Icon: HomeIcon, end: true },
-    { to: '/explore', label: 'Explore', Icon: ExploreIcon },
-    { to: '/orders', label: 'My Orders', Icon: OrdersIcon },
-    { to: '/account', label: 'Account', Icon: AccountIcon },
-    { to: '/settings', label: 'Settings', Icon: SettingsIcon },
+    { to: '/home', label: t('home'), Icon: HomeIcon, end: true },
+    { to: '/explore', label: t('explore'), Icon: ExploreIcon },
+    { to: '/orders', label: t('orders'), Icon: OrdersIcon },
+    { to: '/account', label: t('account'), Icon: AccountIcon },
+    { to: '/settings', label: t('settings'), Icon: SettingsIcon },
   ];
   return (
     <>
