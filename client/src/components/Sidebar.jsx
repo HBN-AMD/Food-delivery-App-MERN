@@ -50,7 +50,6 @@ export default function Sidebar() {
   ];
   return (
     <>
-      {isMobileMenuOpen && <div className="sidebar-backdrop" onClick={closeMobileMenu} />}
       <aside className={`sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-logo">FetchFood</div>
